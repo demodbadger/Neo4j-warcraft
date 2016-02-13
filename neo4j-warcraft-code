@@ -1,0 +1,23 @@
+// http://neo4j.com/developer/guide-import-csv/
+//www.apcjones.com/arrows/
+
+//CREATE CONSTRAINT ON (c:class) ASSERT o.name IS UNIQUE;
+//CREATE CONSTRAINT ON (f:Faction) ASSERT n.number IS UNIQUE;
+//CREATE CONSTRAINT ON (n:Number) ASSERT n.number IS UNIQUE;
+//CREATE CONSTRAINT ON (t:Type) ASSERT n.type IS UNIQUE
+
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS FROM "file:/Users/engineeringstandards/Documents/warcraft.csv" AS csvRow
+//change the location and file name as needed.
+MERGE (server:Server{ name: csvRow.Server})
+MERGE (faction:Faction{ name: csvRow.Faction})
+//The above will work out nodes for the server and faction 
+//as per the table below.
+CREATE (character:Character { level: toInt(csvRow. Level), name: csvRow. Name, class: (csvRow. Class)})
+//The above will load up a node with the keys attributes
+CREATE (faction)<-[:Part_of_the]-(character) 
+CREATE (character)-[:Lives_on]->(server)
+//The above will connect the nodes with the [:relationship_name]
+//and will be directional as indicated by the ->
+
+//Loading the green text from the .csv below will work.
